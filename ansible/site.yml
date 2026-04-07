@@ -1,0 +1,61 @@
+# Play1 = Install and Configure Web Server
+
+- name: Install nginx on Ubuntu server
+  hosts: web
+  become: true
+
+  tasks:
+    - name: Update apt Cache 
+      apt:
+        update_cache: true
+
+    - name: install nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Ensure nginx is running and enabled
+      service:
+        name: nginx
+        state: started
+        enabled: true
+
+
+# Play 2 = Deploy Static Content
+- name: Deploy static website
+  hosts: web
+  become: true
+
+  tasks:
+  - name: Copy index.html to web servers
+    copy:
+      src: files/index.html
+      dest: /var/www/html/index.html
+      owner: www-data
+      group: www-data
+      mode: '0644'
+    notify: Restart nginx  #  OUTSIDE COPY
+
+  handlers:  
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted
+        
+# Play 3 = Verify Deployment
+- name: Verify website from controller
+  hosts: web
+  gather_facts: false
+
+  vars:
+   web_ips: "{{ groups ['web'] }}" 
+
+  tasks:
+    - name: Check HTTP response from each server
+      uri:
+        url: "http://{{ item }}"
+        method: GET
+        return_content: no
+        status_code: 200
+      loop: "{{ web_ips }}"
+      
