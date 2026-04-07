@@ -12,16 +12,21 @@ SSH key-based authentication (passwordless)
 ## 📦 Project Source
 Demo reference:
 https://ebstaticwebsite.z29.web.core.windows.net
+
 Static website source:
 https://github.com/pravinmishraaws/Azure-Static-Website
 
 ## 📁 Project Structure
+
+``` bash
 static-web/
-├─ inventory.ini
-├─ site.yml
-├─ files/
-│  └─ index.html
-└─ README.md
+├── inventory.ini # Defines target servers
+├── site.yml # Multi-play Ansible playbook
+├── files/
+│ └── index.html # Static website content
+└── README.md
+```
+
 inventory.ini → Defines target servers
 site.yml → Multi-play Ansible playbook
 files/index.html → Static website content
